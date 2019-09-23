@@ -475,20 +475,12 @@ pub enum Command {
     Update(Update),
 }
 
-/// Cargo will pass the name of the `cargo-<tool>`
-/// as first argument, so we just have to match it here.
-#[derive(Debug, StructOpt, Clone)]
-pub enum MainCommand {
-    #[structopt(name = "crev")]
-    Crev(Command),
-}
-
 #[derive(Debug, StructOpt, Clone)]
 #[structopt(about = "Distributed code review system")]
 #[structopt(raw(global_setting = "structopt::clap::AppSettings::ColoredHelp"))]
 pub struct Opts {
     #[structopt(subcommand)]
-    pub command: MainCommand,
+    pub command: Command,
     //    #[structopt(flatten)]
     //    verbosity: Verbosity,
 }

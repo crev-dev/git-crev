@@ -203,8 +203,7 @@ fn load_stdin_with_prompt() -> Result<Vec<u8>> {
 fn main() {
     env_logger::init();
     let opts = opts::Opts::from_args();
-    let opts::MainCommand::Crev(command) = opts.command;
-    match run_command(command) {
+    match run_command(opts.command) {
         Ok(CommandExitStatus::Success) => {}
         Ok(CommandExitStatus::VerificationFailed) => std::process::exit(-1),
         Err(e) => {
