@@ -39,7 +39,7 @@ fn run_command(command: opts::Command) -> Result<CommandExitStatus> {
             let local = Local::auto_open()?;
             local.switch_id(&args.id)?
         }
-        opts::Command::Edit(cmd) => match cmd {
+        opts::Command::Id(opts::Id::Edit(args)) => match args {
             opts::Edit::Readme => {
                 let local = crev_lib::Local::auto_open()?;
                 local.edit_readme()?;

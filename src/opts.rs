@@ -274,6 +274,10 @@ pub enum Id {
     /// Change current Id
     #[structopt(name = "switch")]
     Switch(SwitchId),
+
+    /// Edit README.md of the current ID
+    #[structopt(name = "edit")]
+    Edit(Edit),
 }
 
 #[derive(Debug, StructOpt, Clone)]
@@ -396,10 +400,6 @@ pub enum Command {
     /// Manage your own Id (create new, show, export, import, switch)
     #[structopt(name = "id", alias = "new")]
     Id(Id),
-
-    /// Edit README.md of the current Id, ...
-    #[structopt(name = "edit")]
-    Edit(Edit),
 
     /// Query Ids, packages, reviews...
     #[structopt(name = "query")]
