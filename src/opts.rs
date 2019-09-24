@@ -90,30 +90,6 @@ impl From<TrustDistanceParams> for crev_lib::TrustDistanceParams {
     }
 }
 
-#[derive(Debug, StructOpt, Clone)]
-pub struct Diff {
-    /// Source version - defaults to the last reviewed one
-    #[structopt(long = "src")]
-    pub src: Option<Version>,
-
-    /// Destination version - defaults to the current one
-    #[structopt(long = "dst")]
-    pub dst: Option<Version>,
-
-    #[structopt(flatten)]
-    pub requirements: VerificationRequirements,
-
-    #[structopt(flatten)]
-    pub trust_params: TrustDistanceParams,
-
-    /// Crate name
-    pub name: String,
-
-    /// Arguments to the `diff` command
-    #[structopt(parse(from_os_str))]
-    pub args: Vec<OsString>,
-}
-
 /// Verification Requirements
 #[derive(Debug, StructOpt, Clone, Default)]
 pub struct VerificationRequirements {
@@ -312,13 +288,6 @@ pub enum Edit {
 }
 
 #[derive(Debug, StructOpt, Clone)]
-pub struct Git {
-    /// Arguments to the `git` command
-    #[structopt(parse(from_os_str))]
-    pub args: Vec<OsString>,
-}
-
-#[derive(Debug, StructOpt, Clone)]
 pub struct ReviewOrGotoCommon {
     #[structopt(flatten)]
     pub crate_: CrateSelector,
@@ -326,20 +295,6 @@ pub struct ReviewOrGotoCommon {
     /// This crate is not neccesarily a dependency of the current cargo project
     #[structopt(long = "unrelated", short = "u")]
     pub unrelated: bool,
-}
-
-#[derive(Debug, StructOpt, Clone)]
-pub struct Open {
-    /// Shell command to execute with crate directory as an argument. Eg. "code --wait -n" for VSCode
-    #[structopt(long = "cmd")]
-    pub cmd: Option<String>,
-
-    /// Save the `--cmd` argument to be used a default in the future
-    #[structopt(long = "cmd-save")]
-    pub cmd_save: bool,
-
-    #[structopt(flatten)]
-    pub common: ReviewOrGotoCommon,
 }
 
 #[derive(Debug, StructOpt, Clone)]
@@ -470,7 +425,7 @@ pub enum Command {
     #[structopt(name = "import")]
     Import(Import),
 
-    /// Update data from online sources (proof repositories, crates.io)
+    /// Update data from online sources (proof repositories)
     #[structopt(name = "update", alias = "pull")]
     Update(Update),
 }
