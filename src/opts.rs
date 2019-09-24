@@ -278,6 +278,10 @@ pub enum Id {
     /// Edit README.md of the current ID
     #[structopt(name = "edit")]
     Edit(Edit),
+
+    /// Trust an Id
+    #[structopt(name = "trust")]
+    Trust(Trust),
 }
 
 #[derive(Debug, StructOpt, Clone)]
@@ -405,10 +409,6 @@ pub enum Command {
     #[structopt(name = "query")]
     Query(Query),
 
-    /// Trust an Id
-    #[structopt(name = "trust")]
-    Trust(Trust),
-
     /// Distrust an Id
     #[structopt(name = "distrust")]
     Distrust(Trust),
@@ -421,7 +421,7 @@ pub enum Command {
     #[structopt(name = "publish", alias = "push")]
     Publish,
 
-    /// Import proofs, ...
+    /// Import proofs
     #[structopt(name = "import")]
     Import(Import),
 
