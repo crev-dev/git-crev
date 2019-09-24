@@ -282,6 +282,10 @@ pub enum Id {
     /// Trust an Id
     #[structopt(name = "trust")]
     Trust(Trust),
+
+    /// Distrust an Id
+    #[structopt(name = "distrust")]
+    Distrust(Trust),
 }
 
 #[derive(Debug, StructOpt, Clone)]
@@ -408,10 +412,6 @@ pub enum Command {
     /// Query Ids, packages, reviews...
     #[structopt(name = "query")]
     Query(Query),
-
-    /// Distrust an Id
-    #[structopt(name = "distrust")]
-    Distrust(Trust),
 
     /// Fetch proofs from external sources
     #[structopt(name = "fetch")]

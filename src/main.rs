@@ -56,7 +56,7 @@ fn run_command(command: opts::Command) -> Result<CommandExitStatus> {
         opts::Command::Id(opts::Id::Trust(args)) => {
             create_trust_proof(args.pub_ids, Trust, &args.common_proof_create)?;
         }
-        opts::Command::Distrust(args) => {
+        opts::Command::Id(opts::Id::Distrust(args)) => {
             create_trust_proof(args.pub_ids, Distrust, &args.common_proof_create)?;
         }
         opts::Command::Update(_) => {
