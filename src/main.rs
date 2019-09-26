@@ -59,6 +59,23 @@ fn run_command(command: opts::Command) -> Result<CommandExitStatus> {
         opts::Command::Id(opts::Id::Distrust(args)) => {
             create_trust_proof(args.pub_ids, Distrust, &args.common_proof_create)?;
         }
+        opts::Command::Id(opts::Id::Export(params)) => {
+            let local = Local::auto_open()?;
+            println!("{}", local.export_locked_id(params.id)?);
+        }
+        opts::Command::Id(opts::Id::Import) => {
+            let local = Local::auto_create_or_open()?;
+            let s = load_stdin_with_prompt()?;
+            let id = local.import_locked_id(&String::from_utf8(s)?)?;
+            // Note: It's unclear how much of this should be done by
+            // the library
+            local.save_current_id(&id.id)?;
+
+            let proof_dir_path = local.get_proofs_dir_path_for_url(&id.url)?;
+            if !proof_dir_path.exists() {
+                local.clone_proof_dir_from_git(&id.url.url, false)?;
+            }
+        }
         opts::Command::Update(_) => {
             let local = Local::auto_open()?;
             let status = local.run_git(vec!["pull".into(), "--rebase".into()])?;
@@ -146,23 +163,6 @@ fn run_command(command: opts::Command) -> Result<CommandExitStatus> {
                 local.fetch_all()?;
             }
         },
-        opts::Command::Id(opts::Id::Export(params)) => {
-            let local = Local::auto_open()?;
-            println!("{}", local.export_locked_id(params.id)?);
-        }
-        opts::Command::Id(opts::Id::Import) => {
-            let local = Local::auto_create_or_open()?;
-            let s = load_stdin_with_prompt()?;
-            let id = local.import_locked_id(&String::from_utf8(s)?)?;
-            // Note: It's unclear how much of this should be done by
-            // the library
-            local.save_current_id(&id.id)?;
-
-            let proof_dir_path = local.get_proofs_dir_path_for_url(&id.url)?;
-            if !proof_dir_path.exists() {
-                local.clone_proof_dir_from_git(&id.url.url, false)?;
-            }
-        }
         opts::Command::Import(cmd) => match cmd {
             opts::Import::Proof(args) => {
                 let local = Local::auto_create_or_open()?;
