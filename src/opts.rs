@@ -264,9 +264,9 @@ pub enum Command {
     #[structopt(name = "import")]
     Import(Import),
 
-    /// Update data from online sources (proof repositories)
-    #[structopt(name = "update", alias = "pull")]
-    Update(Update),
+    // /// Update data from online sources (proof repositories)
+    // #[structopt(name = "update", alias = "pull")]
+    // Update(Update),
 }
 
 #[derive(Debug, StructOpt, Clone)]
