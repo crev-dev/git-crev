@@ -83,51 +83,6 @@ fn run_command(command: opts::Command) -> Result<CommandExitStatus> {
                 std::process::exit(status.code().unwrap_or(-159));
             }
         }
-        opts::Command::Query(cmd) => match cmd {
-            opts::Query::Id(cmd) => match cmd {
-                opts::QueryId::Current => {
-                    let local = Local::auto_open()?;
-                    local.show_current_id()?
-                }
-                opts::QueryId::Own => {
-                    let local = Local::auto_open()?;
-                    local.list_own_ids()?
-                }
-                opts::QueryId::Trusted {
-                    for_id,
-                    trust_params,
-                } => {
-                    let local = crev_lib::Local::auto_open()?;
-                    let db = local.load_db()?;
-                    let for_id = local.get_for_id_from_str(for_id.as_deref())?;
-                    let trust_set = db.calculate_trust_set(&for_id, &trust_params.into());
-
-                    for id in trust_set.trusted_ids() {
-                        println!(
-                            "{} {:6} {}",
-                            id,
-                            trust_set
-                                .get_effective_trust_level(id)
-                                .expect("Some trust level"),
-                            db.lookup_url(id).map(|url| url.url.as_str()).unwrap_or("")
-                        );
-                    }
-                }
-                // TODO: move to crev-lib
-                opts::QueryId::All => {
-                    let local = crev_lib::Local::auto_create_or_open()?;
-                    let db = local.load_db()?;
-
-                    for id in &db.all_known_ids() {
-                        println!(
-                            "{} {}",
-                            id,
-                            db.lookup_url(id).map(|url| url.url.as_str()).unwrap_or("")
-                        );
-                    }
-                }
-            },
-        },
         opts::Command::Publish => {
             let local = Local::auto_open()?;
             let mut status = local.run_git(vec!["diff".into(), "--exit-code".into()])?;

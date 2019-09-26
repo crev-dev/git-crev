@@ -151,38 +151,6 @@ pub enum Fetch {
 }
 
 #[derive(Debug, StructOpt, Clone)]
-pub enum QueryId {
-    /// Show current Id
-    #[structopt(name = "current")]
-    Current,
-
-    /// Show all known Ids
-    #[structopt(name = "all")]
-    All,
-
-    /// Show own Ids
-    #[structopt(name = "own")]
-    Own,
-
-    /// List trusted ids
-    #[structopt(name = "trusted")]
-    Trusted {
-        #[structopt(flatten)]
-        trust_params: TrustDistanceParams,
-
-        #[structopt(long = "for-id")]
-        for_id: Option<String>,
-    },
-}
-
-#[derive(Debug, StructOpt, Clone)]
-pub enum Query {
-    /// Query Ids
-    #[structopt(name = "id", alias = "new")] // alias is a hack for back-compat
-    Id(QueryId),
-}
-
-#[derive(Debug, StructOpt, Clone)]
 pub enum Id {
     /// Create a new Id
     #[structopt(name = "new", alias = "id")] // alias is a hack for back-compat
@@ -255,15 +223,6 @@ pub struct AdviseCommon {
 }
 
 #[derive(Debug, StructOpt, Clone)]
-pub struct Lookup {
-    /// Number of results
-    #[structopt(long = "count", default_value = "10")]
-    pub count: usize,
-    /// Query to use
-    pub query: String,
-}
-
-#[derive(Debug, StructOpt, Clone)]
 pub struct ExportId {
     pub id: Option<String>,
 }
@@ -289,13 +248,9 @@ pub struct ImportProof {
 
 #[derive(Debug, StructOpt, Clone)]
 pub enum Command {
-    /// Manage your own Id (create new, show, export, import, switch)
+    /// Manage IDs
     #[structopt(name = "id", alias = "new")]
     Id(Id),
-
-    /// Query Ids, packages, reviews...
-    #[structopt(name = "query")]
-    Query(Query),
 
     /// Fetch proofs from external sources
     #[structopt(name = "fetch")]
