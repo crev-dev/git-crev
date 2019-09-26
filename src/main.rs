@@ -12,9 +12,9 @@ use crev_lib::{self, local::Local};
 use std::io::BufRead;
 use structopt::StructOpt;
 
-#[cfg(feature = "documentation")]
-/// Documentation
-pub mod doc;
+// #[cfg(feature = "documentation")]
+// /// Documentation
+// pub mod doc;
 
 mod opts;
 mod prelude;

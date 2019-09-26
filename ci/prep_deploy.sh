@@ -2,7 +2,7 @@
 
 set -x
 
-export CRATE_NAME=cargo-crev
+export CRATE_NAME=git-crev
 name="$TRAVIS_TAG-$TARGET"
 mkdir -p "$name"
 cp "target/$TARGET/release/$CRATE_NAME" "$name/"

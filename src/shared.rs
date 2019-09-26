@@ -19,12 +19,6 @@ pub enum VcsInfoJsonGit {
     Sha1(String),
 }
 
-#[derive(Copy, Clone, PartialEq, Eq)]
-pub enum UnrelatedOrDependency {
-    Unrelated,
-    Dependency,
-}
-
 pub fn create_trust_proof(
     ids: Vec<String>,
     trust_or_distrust: TrustOrDistrust,

@@ -1,39 +1,5 @@
 use crev_data::Level;
-use semver::Version;
-use std::ffi::OsString;
-use std::path::PathBuf;
 use structopt::StructOpt;
-
-#[derive(Debug, StructOpt, Clone)]
-pub struct CrateSelector {
-    pub name: Option<String>,
-    pub version: Option<Version>,
-}
-
-#[derive(Debug, StructOpt, Clone, Default)]
-pub struct CargoOpts {
-    #[structopt(long = "features", value_name = "FEATURES")]
-    /// Space-separated list of features to activate
-    pub features: Option<String>,
-    #[structopt(long = "all-features")]
-    /// Activate all available features
-    pub all_features: bool,
-    #[structopt(long = "no-default-features")]
-    /// Do not activate the `default` feature
-    pub no_default_features: bool,
-    #[structopt(long = "target", value_name = "TARGET")]
-    /// Set the target triple
-    pub target: Option<String>,
-    #[structopt(long = "no-dev-dependencies")]
-    /// Skip dev dependencies.
-    pub no_dev_dependencies: bool,
-    #[structopt(long = "manifest-path", value_name = "PATH", parse(from_os_str))]
-    /// Path to Cargo.toml
-    pub manifest_path: Option<PathBuf>,
-    #[structopt(short = "Z", value_name = "FLAG")]
-    /// Unstable (nightly-only) flags to Cargo
-    pub unstable_flags: Vec<String>,
-}
 
 #[derive(Debug, StructOpt, Clone)]
 pub struct NewId {
@@ -120,15 +86,12 @@ impl From<VerificationRequirements> for crev_lib::VerificationRequirements {
 }
 
 #[derive(Debug, StructOpt, Clone, Default)]
-pub struct Update {
-    #[structopt(flatten)]
-    pub cargo_opts: CargoOpts,
-}
+pub struct Update {}
 
 #[derive(Debug, StructOpt, Clone, Default)]
 pub struct Verify {
     #[structopt(long = "verbose", short = "v")]
-    /// Display more informations about the crates
+    /// Display more information
     pub verbose: bool,
 
     #[structopt(long = "interactive", short = "i")]
@@ -141,11 +104,11 @@ pub struct Verify {
     pub requirements: VerificationRequirements,
 
     #[structopt(long = "skip-verified")]
-    /// Display only crates not passing the verification
+    /// Display only commits not passing the verification
     pub skip_verified: bool,
 
     #[structopt(long = "skip-known-owners")]
-    /// Skip crate from known owners (use `edit known` to edit the list)
+    /// Skip commits from known owners (use `edit known` to edit the list)
     pub skip_known_owners: bool,
 
     #[structopt(long = "for-id")]
@@ -155,9 +118,6 @@ pub struct Verify {
     #[structopt(long = "recursive")]
     /// Calculate recursive metrics for your packages
     pub recursive: bool,
-
-    #[structopt(flatten)]
-    pub cargo_opts: CargoOpts,
 }
 
 #[derive(Debug, StructOpt, Clone)]
@@ -216,37 +176,6 @@ pub enum QueryId {
 }
 
 #[derive(Debug, StructOpt, Clone)]
-pub struct QueryReview {
-    #[structopt(flatten)]
-    pub crate_: CrateSelector,
-}
-
-#[derive(Debug, StructOpt, Clone)]
-pub struct QueryAdvisory {
-    #[structopt(flatten)]
-    pub crate_: CrateSelector,
-}
-
-#[derive(Debug, StructOpt, Clone)]
-pub struct QueryIssue {
-    #[structopt(flatten)]
-    pub crate_: CrateSelector,
-
-    #[structopt(flatten)]
-    pub trust_params: TrustDistanceParams,
-
-    /// Minimum trust level of the reviewers for reviews
-    #[structopt(long = "trust", default_value = "none")]
-    pub trust_level: crev_data::Level,
-}
-
-#[derive(Debug, StructOpt, Clone)]
-pub struct QueryDir {
-    #[structopt(flatten)]
-    pub common: ReviewOrGotoCommon,
-}
-
-#[derive(Debug, StructOpt, Clone)]
 pub enum Query {
     /// Query Ids
     #[structopt(name = "id", alias = "new")] // alias is a hack for back-compat
@@ -300,16 +229,6 @@ pub enum Edit {
 }
 
 #[derive(Debug, StructOpt, Clone)]
-pub struct ReviewOrGotoCommon {
-    #[structopt(flatten)]
-    pub crate_: CrateSelector,
-
-    /// This crate is not neccesarily a dependency of the current cargo project
-    #[structopt(long = "unrelated", short = "u")]
-    pub unrelated: bool,
-}
-
-#[derive(Debug, StructOpt, Clone)]
 pub struct CommonProofCreate {
     /// Don't auto-commit local Proof Repository
     #[structopt(long = "no-commit")]
@@ -326,41 +245,6 @@ pub struct CommonProofCreate {
     /// Don't store the proof
     #[structopt(long = "no-store")]
     pub no_store: bool,
-}
-
-#[derive(Debug, StructOpt, Clone)]
-pub struct Review {
-    #[structopt(flatten)]
-    pub common: ReviewOrGotoCommon,
-
-    #[structopt(flatten)]
-    pub common_proof_create: CommonProofCreate,
-
-    /// Create advisory urging to upgrade to a safe version
-    #[structopt(long = "advisory")]
-    pub advisory: bool,
-
-    /// This release contains advisory (important fix)
-    #[structopt(long = "affected")]
-    pub affected: Option<crev_data::proof::review::package::VersionRange>,
-
-    /// Severity of bug/security issue [none low medium high]
-    #[structopt(long = "severity")]
-    pub severity: Option<Level>,
-
-    /// Flag the crate as buggy/low-quality/dangerous
-    #[structopt(long = "issue")]
-    pub issue: bool,
-
-    #[structopt(long = "skip-activity-check")]
-    pub skip_activity_check: bool,
-
-    #[structopt(long = "diff")]
-    #[allow(clippy::option_option)]
-    pub diff: Option<Option<semver::Version>>,
-
-    #[structopt(flatten)]
-    pub cargo_opts: CargoOpts,
 }
 
 #[derive(Debug, Clone, Default)]
