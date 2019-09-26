@@ -256,7 +256,7 @@ pub enum Command {
     #[structopt(name = "fetch")]
     Fetch(Fetch),
 
-    /// Commit and Push local changes to the public proof repository (alias to `git commit -a && git push HEAD`)
+    /// Publish local changes to the public proof repository
     #[structopt(name = "publish", alias = "push")]
     Publish,
 
