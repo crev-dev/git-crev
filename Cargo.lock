@@ -1056,6 +1056,7 @@ dependencies = [
  "env_logger 0.6.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "failure 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "geiger 0.3.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "git2 0.9.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "insideout 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "lazy_static 1.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "num_cpus 1.10.1 (registry+https://github.com/rust-lang/crates.io-index)",
