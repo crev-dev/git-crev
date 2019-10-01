@@ -20,16 +20,16 @@ use structopt::StructOpt;
 
 mod index;
 mod local;
-mod opts;
+mod commands;
 mod prelude;
 mod shared;
 mod term;
 
 use crate::shared::*;
 
-fn run_command(command: opts::Command) -> Result<()> {
+fn run_command(command: commands::Command) -> Result<()> {
     match command {
-        opts::Command::Id(opts::Id::New(args)) => {
+        commands::Command::Id(commands::Id::New(args)) => {
             let local = crev::Local::auto_create_or_open()?;
             let res = local.generate_id(args.url, args.github_username, args.use_https_push);
             if res.is_err() {
@@ -38,35 +38,35 @@ fn run_command(command: opts::Command) -> Result<()> {
             let _ = crev::Local::auto_open()?;
             res?;
         }
-        opts::Command::Id(opts::Id::Switch(args)) => {
+        commands::Command::Id(commands::Id::Switch(args)) => {
             let local = crev::Local::auto_open()?;
             local.switch_id(&args.id)?
         }
-        opts::Command::Id(opts::Id::Edit(args)) => match args {
-            opts::Edit::Readme => {
+        commands::Command::Id(commands::Id::Edit(args)) => match args {
+            commands::Edit::Readme => {
                 let local = crev::Local::auto_open()?;
                 local.edit_readme()?;
             }
-            opts::Edit::Config => {
+            commands::Edit::Config => {
                 let local = crev::Local::auto_create_or_open()?;
                 local.edit_user_config()?;
             }
         },
-        opts::Command::Id(opts::Id::Show) => {
+        commands::Command::Id(commands::Id::Show) => {
             let local = crev::Local::auto_open()?;
             local.show_own_ids()?;
         }
-        opts::Command::Id(opts::Id::Trust(args)) => {
+        commands::Command::Id(commands::Id::Trust(args)) => {
             create_trust_proof(args.pub_ids, Trust, &args.common_proof_create)?;
         }
-        opts::Command::Id(opts::Id::Distrust(args)) => {
+        commands::Command::Id(commands::Id::Distrust(args)) => {
             create_trust_proof(args.pub_ids, Distrust, &args.common_proof_create)?;
         }
-        opts::Command::Id(opts::Id::Export(params)) => {
+        commands::Command::Id(commands::Id::Export(params)) => {
             let local = crev::Local::auto_open()?;
             println!("{}", local.export_locked_id(params.id)?);
         }
-        opts::Command::Id(opts::Id::Import) => {
+        commands::Command::Id(commands::Id::Import) => {
             let local = crev::Local::auto_create_or_open()?;
             let s = load_stdin_with_prompt()?;
             let id = local.import_locked_id(&String::from_utf8(s)?)?;
@@ -79,7 +79,7 @@ fn run_command(command: opts::Command) -> Result<()> {
                 local.clone_proof_dir_from_git(&id.url.url, false)?;
             }
         }
-        opts::Command::Publish => {
+        commands::Command::Publish => {
             let local = crev::Local::auto_open()?;
             let mut status = local.run_git(vec!["diff".into(), "--exit-code".into()])?;
 
@@ -100,22 +100,22 @@ fn run_command(command: opts::Command) -> Result<()> {
             }
             std::process::exit(status.code().unwrap_or(-159));
         }
-        opts::Command::Fetch(cmd) => match cmd {
-            opts::Fetch::Trusted(params) => {
+        commands::Command::Fetch(cmd) => match cmd {
+            commands::Fetch::Trusted(params) => {
                 let local = crev::Local::auto_create_or_open()?;
                 local.fetch_trusted(params.into())?;
             }
-            opts::Fetch::Url(params) => {
+            commands::Fetch::Url(params) => {
                 let local = crev::Local::auto_create_or_open()?;
                 local.fetch_url(&params.url)?;
             }
-            opts::Fetch::All => {
+            commands::Fetch::All => {
                 let local = crev::Local::auto_create_or_open()?;
                 local.fetch_all()?;
             }
         },
-        opts::Command::Import(cmd) => match cmd {
-            opts::Import::Proof(args) => {
+        commands::Command::Import(cmd) => match cmd {
+            commands::Import::Proof(args) => {
                 let local = crev::Local::auto_create_or_open()?;
                 let id = local.read_current_unlocked_id(&crev_common::read_passphrase)?;
 
@@ -134,7 +134,7 @@ fn run_command(command: opts::Command) -> Result<()> {
                 }
             }
         },
-        opts::Command::Add(args) => {
+        commands::Command::Add(args) => {
             let local = local::Local::auto_create_or_open()?;
 
             let trust_status = if args.trust {
@@ -167,8 +167,8 @@ fn load_stdin_with_prompt() -> Result<Vec<u8>> {
 
 fn main() {
     env_logger::init();
-    let opts = opts::Opts::from_args();
-    match run_command(opts.command) {
+    let commands = commands::Opts::from_args();
+    match run_command(commands.command) {
         Ok(_) => {}
         Err(e) => {
             eprintln!("{}", e.display_causes_and_backtrace());

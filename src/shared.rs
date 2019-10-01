@@ -1,6 +1,6 @@
 // Here are the structs and functions which still need to be sorted
 //
-use crate::opts;
+use crate::commands;
 use crate::prelude::*;
 use crev_lib::TrustOrDistrust;
 use crev_lib::{self, local::Local, ProofStore};
@@ -22,7 +22,7 @@ pub enum VcsInfoJsonGit {
 pub fn create_trust_proof(
     ids: Vec<String>,
     trust_or_distrust: TrustOrDistrust,
-    proof_create_opt: &opts::CommonProofCreate,
+    proof_create_opt: &commands::CommonProofCreate,
 ) -> Result<()> {
     let local = Local::auto_open()?;
 
@@ -56,7 +56,7 @@ pub fn maybe_store(
     local: &Local,
     proof: &crev_data::proof::Proof,
     commit_msg: &str,
-    proof_create_opt: &opts::CommonProofCreate,
+    proof_create_opt: &commands::CommonProofCreate,
 ) -> Result<()> {
     if proof_create_opt.print_unsigned {
         print!("{}", proof.body);
