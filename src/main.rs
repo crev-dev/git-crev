@@ -79,13 +79,6 @@ fn run_command(command: opts::Command) -> Result<()> {
                 local.clone_proof_dir_from_git(&id.url.url, false)?;
             }
         }
-        // opts::Command::Update(_) => {
-        //     let local = crev::Local::auto_open()?;
-        //     let status = local.run_git(vec!["pull".into(), "--rebase".into()])?;
-        //     if !status.success() {
-        //         std::process::exit(status.code().unwrap_or(-159));
-        //     }
-        // }
         opts::Command::Publish => {
             let local = crev::Local::auto_open()?;
             let mut status = local.run_git(vec!["diff".into(), "--exit-code".into()])?;
