@@ -7,7 +7,10 @@
 #![cfg_attr(feature = "documentation", feature(external_doc))]
 use self::prelude::*;
 
+use crev::TrustOrDistrust::*;
+use crev_data;
 use crev_lib as crev;
+
 use std::io::BufRead;
 use structopt::StructOpt;
 
@@ -15,15 +18,16 @@ use structopt::StructOpt;
 // /// Documentation
 // pub mod doc;
 
+mod index;
+mod local;
 mod opts;
 mod prelude;
 mod shared;
 mod term;
 
 use crate::shared::*;
-use crev::TrustOrDistrust::*;
 
-fn run_command(command: opts::Command) -> Result<CommandExitStatus> {
+fn run_command(command: opts::Command) -> Result<()> {
     match command {
         opts::Command::Id(opts::Id::New(args)) => {
             let local = crev::Local::auto_create_or_open()?;
@@ -137,19 +141,33 @@ fn run_command(command: opts::Command) -> Result<CommandExitStatus> {
                 }
             }
         },
+        opts::Command::Add(args) => {
+            let local = local::Local::auto_create_or_open()?;
+
+            let trust_status = if args.trust {
+                crev::TrustOrDistrust::Trust
+            } else if args.distrust {
+                crev::TrustOrDistrust::Distrust
+            } else {
+                return Err(std::io::Error::new(
+                    std::io::ErrorKind::Other,
+                    "One of --trust or --distrust must be specified.",
+                ))?;
+            };
+
+            index::add_revision_specification_commits(&args.revision_range, &local, &trust_status)?;
+        }
     }
 
-    Ok(CommandExitStatus::Success)
+    Ok(())
 }
 
 fn load_stdin_with_prompt() -> Result<Vec<u8>> {
     let term = term::Term::new();
-
     if term.stdin_is_tty {
         eprintln!("Paste in the text and press Ctrl+D.")
     }
     let mut s = vec![];
-
     std::io::stdin().lock().read_until(0, &mut s)?;
     Ok(s)
 }
@@ -158,8 +176,7 @@ fn main() {
     env_logger::init();
     let opts = opts::Opts::from_args();
     match run_command(opts.command) {
-        Ok(CommandExitStatus::Success) => {}
-        Ok(CommandExitStatus::VerificationFailed) => std::process::exit(-1),
+        Ok(_) => {}
         Err(e) => {
             eprintln!("{}", e.display_causes_and_backtrace());
             std::process::exit(-2)

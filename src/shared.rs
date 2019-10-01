@@ -47,8 +47,7 @@ pub fn create_trust_proof(
 /// This is to distinguish expected non-success results,
 /// from errors: unexpected failures.
 pub enum CommandExitStatus {
-    // `verify deps` failed
-    VerificationFailed,
+    Failure,
     // Success, exit code 0
     Success,
 }

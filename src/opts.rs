@@ -247,6 +247,20 @@ pub struct ImportProof {
 }
 
 #[derive(Debug, StructOpt, Clone)]
+#[structopt(name = "add")]
+pub struct Add {
+    /// Git revision range
+    #[structopt(name = "revision range", default_value = "HEAD")]
+    pub revision_range: String,
+
+    #[structopt(long = "trust", short = "t")]
+    pub trust: bool,
+
+    #[structopt(long = "distrust", short = "d")]
+    pub distrust: bool,
+}
+
+#[derive(Debug, StructOpt, Clone)]
 pub enum Command {
     /// Manage IDs
     #[structopt(name = "id", alias = "new")]
@@ -256,6 +270,7 @@ pub enum Command {
     #[structopt(name = "fetch")]
     Fetch(Fetch),
 
+    // TODO: should rename publish to push?
     /// Publish local changes to the public proof repository
     #[structopt(name = "publish", alias = "push")]
     Publish,
@@ -267,14 +282,16 @@ pub enum Command {
     // /// Update data from online sources (proof repositories)
     // #[structopt(name = "update", alias = "pull")]
     // Update(Update),
+    /// Stage commits for review
+    #[structopt(name = "add")]
+    Add(Add),
 }
 
 #[derive(Debug, StructOpt, Clone)]
 #[structopt(about = "Distributed code review system")]
 #[structopt(raw(global_setting = "structopt::clap::AppSettings::ColoredHelp"))]
+#[structopt(raw(global_setting = "structopt::clap::AppSettings::DeriveDisplayOrder"))]
 pub struct Opts {
     #[structopt(subcommand)]
     pub command: Command,
-    //    #[structopt(flatten)]
-    //    verbosity: Verbosity,
 }

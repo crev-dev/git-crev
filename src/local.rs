@@ -1,6 +1,7 @@
-use crate::prelude::*;
 use git2;
 use std::io::prelude::*;
+
+use crate::prelude::*;
 
 /// Manages the Git repository's local crev state.
 pub struct Local {
