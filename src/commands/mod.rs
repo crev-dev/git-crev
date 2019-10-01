@@ -1,6 +1,8 @@
 use crev_data::Level;
 use structopt::StructOpt;
 
+pub mod add;
+
 #[derive(Debug, StructOpt, Clone)]
 pub struct NewId {
     #[structopt(long = "url")]
@@ -247,20 +249,6 @@ pub struct ImportProof {
 }
 
 #[derive(Debug, StructOpt, Clone)]
-#[structopt(name = "add")]
-pub struct Add {
-    /// Git revision range
-    #[structopt(name = "revision range", default_value = "HEAD")]
-    pub revision_range: String,
-
-    #[structopt(long = "trust", short = "t")]
-    pub trust: bool,
-
-    #[structopt(long = "distrust", short = "d")]
-    pub distrust: bool,
-}
-
-#[derive(Debug, StructOpt, Clone)]
 pub enum Command {
     /// Manage IDs
     #[structopt(name = "id", alias = "new")]
@@ -281,7 +269,7 @@ pub enum Command {
 
     /// Stage commits for review
     #[structopt(name = "add")]
-    Add(Add),
+    Add(add::Add),
 }
 
 #[derive(Debug, StructOpt, Clone)]

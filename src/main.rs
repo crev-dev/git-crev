@@ -135,20 +135,7 @@ fn run_command(command: commands::Command) -> Result<()> {
             }
         },
         commands::Command::Add(args) => {
-            let local = local::Local::auto_create_or_open()?;
-
-            let trust_status = if args.trust {
-                crev::TrustOrDistrust::Trust
-            } else if args.distrust {
-                crev::TrustOrDistrust::Distrust
-            } else {
-                return Err(std::io::Error::new(
-                    std::io::ErrorKind::Other,
-                    "One of --trust or --distrust must be specified.",
-                ))?;
-            };
-
-            index::add_revision_range_commits(&args.revision_range, &local, &trust_status)?;
+            commands::add::run_command(&args)?;
         }
     }
 
