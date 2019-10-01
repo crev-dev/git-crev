@@ -32,7 +32,7 @@ macro_rules! try_unwrap_opt {
 }
 
 /// Add commit(s) to the index based on a revision specification.
-pub fn add_revision_specification_commits(
+pub fn add_revision_range_commits(
     revision_specification: &str,
     local: &local::Local,
     trust_status: &crev::TrustOrDistrust,

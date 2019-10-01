@@ -155,7 +155,7 @@ fn run_command(command: opts::Command) -> Result<()> {
                 ))?;
             };
 
-            index::add_revision_specification_commits(&args.revision_range, &local, &trust_status)?;
+            index::add_revision_range_commits(&args.revision_range, &local, &trust_status)?;
         }
     }
 
