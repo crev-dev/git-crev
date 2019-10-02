@@ -1,11 +1,25 @@
 // Here are the structs and functions which still need to be sorted
 //
+use std::io::BufRead;
+
 use crate::commands;
 use crate::prelude::*;
 use crev_lib::TrustOrDistrust;
 use crev_lib::{self, local::Local, ProofStore};
 use failure::format_err;
 use serde::Deserialize;
+
+use crate::term;
+
+pub fn load_stdin_with_prompt() -> Result<Vec<u8>> {
+    let term = term::Term::new();
+    if term.stdin_is_tty {
+        eprintln!("Paste in the text and press Ctrl+D.")
+    }
+    let mut s = vec![];
+    std::io::stdin().lock().read_until(0, &mut s)?;
+    Ok(s)
+}
 
 /// Data from `.cargo_vcs_info.json`
 #[derive(Debug, Clone, Deserialize)]
@@ -22,7 +36,7 @@ pub enum VcsInfoJsonGit {
 pub fn create_trust_proof(
     ids: Vec<String>,
     trust_or_distrust: TrustOrDistrust,
-    proof_create_opt: &commands::CommonProofCreate,
+    proof_create_opt: &commands::id::CommonProofCreate,
 ) -> Result<()> {
     let local = Local::auto_open()?;
 
@@ -56,7 +70,7 @@ pub fn maybe_store(
     local: &Local,
     proof: &crev_data::proof::Proof,
     commit_msg: &str,
-    proof_create_opt: &commands::CommonProofCreate,
+    proof_create_opt: &commands::id::CommonProofCreate,
 ) -> Result<()> {
     if proof_create_opt.print_unsigned {
         print!("{}", proof.body);

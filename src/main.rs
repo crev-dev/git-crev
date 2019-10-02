@@ -7,7 +7,6 @@
 #![cfg_attr(feature = "documentation", feature(external_doc))]
 use self::prelude::*;
 
-use crev::TrustOrDistrust::*;
 use crev_data;
 use crev_lib as crev;
 
@@ -29,55 +28,8 @@ use crate::shared::*;
 
 fn run_command(command: commands::Command) -> Result<()> {
     match command {
-        commands::Command::Id(commands::Id::New(args)) => {
-            let local = crev::Local::auto_create_or_open()?;
-            let res = local.generate_id(args.url, args.github_username, args.use_https_push);
-            if res.is_err() {
-                eprintln!("Visit https://github.com/dpc/crev/wiki/Proof-Repository for help.");
-            }
-            let _ = crev::Local::auto_open()?;
-            res?;
-        }
-        commands::Command::Id(commands::Id::Switch(args)) => {
-            let local = crev::Local::auto_open()?;
-            local.switch_id(&args.id)?
-        }
-        commands::Command::Id(commands::Id::Edit(args)) => match args {
-            commands::Edit::Readme => {
-                let local = crev::Local::auto_open()?;
-                local.edit_readme()?;
-            }
-            commands::Edit::Config => {
-                let local = crev::Local::auto_create_or_open()?;
-                local.edit_user_config()?;
-            }
-        },
-        commands::Command::Id(commands::Id::Show) => {
-            let local = crev::Local::auto_open()?;
-            local.show_own_ids()?;
-        }
-        commands::Command::Id(commands::Id::Trust(args)) => {
-            create_trust_proof(args.pub_ids, Trust, &args.common_proof_create)?;
-        }
-        commands::Command::Id(commands::Id::Distrust(args)) => {
-            create_trust_proof(args.pub_ids, Distrust, &args.common_proof_create)?;
-        }
-        commands::Command::Id(commands::Id::Export(params)) => {
-            let local = crev::Local::auto_open()?;
-            println!("{}", local.export_locked_id(params.id)?);
-        }
-        commands::Command::Id(commands::Id::Import) => {
-            let local = crev::Local::auto_create_or_open()?;
-            let s = load_stdin_with_prompt()?;
-            let id = local.import_locked_id(&String::from_utf8(s)?)?;
-            // Note: It's unclear how much of this should be done by
-            // the library
-            local.save_current_id(&id.id)?;
-
-            let proof_dir_path = local.get_proofs_dir_path_for_url(&id.url)?;
-            if !proof_dir_path.exists() {
-                local.clone_proof_dir_from_git(&id.url.url, false)?;
-            }
+        commands::Command::Id(subcommand) => {
+            commands::id::run_command(subcommand)?;
         }
         commands::Command::Publish => {
             let local = crev::Local::auto_open()?;
@@ -140,16 +92,6 @@ fn run_command(command: commands::Command) -> Result<()> {
     }
 
     Ok(())
-}
-
-fn load_stdin_with_prompt() -> Result<Vec<u8>> {
-    let term = term::Term::new();
-    if term.stdin_is_tty {
-        eprintln!("Paste in the text and press Ctrl+D.")
-    }
-    let mut s = vec![];
-    std::io::stdin().lock().read_until(0, &mut s)?;
-    Ok(s)
 }
 
 fn main() {
