@@ -3,6 +3,7 @@ use structopt::StructOpt;
 
 pub mod id;
 pub mod add;
+pub mod publish;
 
 
 impl From<TrustDistanceParams> for crev_lib::TrustDistanceParams {
