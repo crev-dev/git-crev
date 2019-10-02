@@ -129,26 +129,6 @@ pub enum Edit {
     Config,
 }
 
-// TODO: is the right module for this?
-#[derive(Debug, StructOpt, Clone)]
-pub struct CommonProofCreate {
-    /// Don't auto-commit local Proof Repository
-    #[structopt(long = "no-commit")]
-    pub no_commit: bool,
-
-    /// Print unsigned proof content on stdout
-    #[structopt(long = "print-unsigned")]
-    pub print_unsigned: bool,
-
-    /// Print signed proof content on stdout
-    #[structopt(long = "print-signed")]
-    pub print_signed: bool,
-
-    /// Don't store the proof
-    #[structopt(long = "no-store")]
-    pub no_store: bool,
-}
-
 #[derive(Debug, StructOpt, Clone)]
 pub struct Trust {
     /// Public IDs to create Trust Proof for

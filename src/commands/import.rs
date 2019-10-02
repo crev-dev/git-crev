@@ -1,6 +1,5 @@
 use structopt::StructOpt;
 
-use crate::commands::id;
 use crate::prelude::*;
 use crate::shared::*;
 use crev_lib as crev;
@@ -45,5 +44,5 @@ pub struct ImportProof {
     pub reset_date: bool,
 
     #[structopt(flatten)]
-    pub common: id::CommonProofCreate,
+    pub common: CommonProofCreate,
 }

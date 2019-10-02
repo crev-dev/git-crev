@@ -2,7 +2,7 @@
 //
 use std::io::BufRead;
 
-use crate::commands;
+use structopt::StructOpt;
 use crate::prelude::*;
 use crev_lib::TrustOrDistrust;
 use crev_lib::{self, local::Local, ProofStore};
@@ -33,10 +33,29 @@ pub enum VcsInfoJsonGit {
     Sha1(String),
 }
 
+#[derive(Debug, StructOpt, Clone)]
+pub struct CommonProofCreate {
+    /// Don't auto-commit local Proof Repository
+    #[structopt(long = "no-commit")]
+    pub no_commit: bool,
+
+    /// Print unsigned proof content on stdout
+    #[structopt(long = "print-unsigned")]
+    pub print_unsigned: bool,
+
+    /// Print signed proof content on stdout
+    #[structopt(long = "print-signed")]
+    pub print_signed: bool,
+
+    /// Don't store the proof
+    #[structopt(long = "no-store")]
+    pub no_store: bool,
+}
+
 pub fn create_trust_proof(
     ids: Vec<String>,
     trust_or_distrust: TrustOrDistrust,
-    proof_create_opt: &commands::id::CommonProofCreate,
+    proof_create_opt: &CommonProofCreate,
 ) -> Result<()> {
     let local = Local::auto_open()?;
 
@@ -60,7 +79,7 @@ pub fn maybe_store(
     local: &Local,
     proof: &crev_data::proof::Proof,
     commit_msg: &str,
-    proof_create_opt: &commands::id::CommonProofCreate,
+    proof_create_opt: &CommonProofCreate,
 ) -> Result<()> {
     if proof_create_opt.print_unsigned {
         print!("{}", proof.body);

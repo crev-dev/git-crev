@@ -4,7 +4,7 @@ use crate::prelude::*;
 
 mod add;
 mod fetch;
-pub mod id;
+mod id;
 mod import;
 mod publish;
 
