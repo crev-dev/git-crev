@@ -1,9 +1,9 @@
 use structopt::StructOpt;
 
-use crev_lib as crev;
 use crate::commands::id;
 use crate::prelude::*;
 use crate::shared::*;
+use crev_lib as crev;
 
 pub fn run_command(subcommand: Import) -> Result<()> {
     match subcommand {

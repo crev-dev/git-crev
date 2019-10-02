@@ -1,4 +1,4 @@
-//! `git-crev` - `crev` ecosystem fronted for Git.
+//! `git-crev` - `crev` ecosystem frontend for Git.
 //!
 #![cfg_attr(
     feature = "documentation",
@@ -13,9 +13,9 @@ use structopt::StructOpt;
 // /// Documentation
 // pub mod doc;
 
+mod commands;
 mod index;
 mod local;
-mod commands;
 mod prelude;
 mod shared;
 mod term;

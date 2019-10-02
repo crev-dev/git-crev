@@ -1,4 +1,4 @@
-// Here are the structs and functions which still need to be sorted
+// Miscellaneous structures and functions.
 //
 use std::io::BufRead;
 
@@ -54,16 +54,6 @@ pub fn create_trust_proof(
     maybe_store(&local, &proof, &commit_msg, proof_create_opt)?;
 
     Ok(())
-}
-
-/// Result of `run_command`
-///
-/// This is to distinguish expected non-success results,
-/// from errors: unexpected failures.
-pub enum CommandExitStatus {
-    Failure,
-    // Success, exit code 0
-    Success,
 }
 
 pub fn maybe_store(

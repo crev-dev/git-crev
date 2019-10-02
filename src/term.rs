@@ -1,21 +1,8 @@
-use crev_lib::VerificationStatus;
 use std::{
     fmt::Arguments,
     io::{self, Write},
 };
-use term::{
-    self,
-    color::{self, Color},
-    StderrTerminal, StdoutTerminal,
-};
-
-pub fn verification_status_color(s: VerificationStatus) -> Option<color::Color> {
-    match s {
-        VerificationStatus::Verified => Some(term::color::GREEN),
-        VerificationStatus::Insufficient => None,
-        VerificationStatus::Negative => Some(term::color::YELLOW),
-    }
-}
+use term::{self, color::Color, StderrTerminal, StdoutTerminal};
 
 pub struct Term {
     pub stdout_is_tty: bool,

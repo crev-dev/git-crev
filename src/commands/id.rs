@@ -1,8 +1,8 @@
 use structopt;
 use structopt::StructOpt;
 
-use crev_lib as crev;
 use crev::TrustOrDistrust::*;
+use crev_lib as crev;
 
 use crate::prelude::*;
 use crate::shared::*;
@@ -31,7 +31,7 @@ pub fn run_command(subcommand: Id) -> Result<()> {
                 let local = crev::Local::auto_create_or_open()?;
                 local.edit_user_config()?;
             }
-        }
+        },
         Id::Show => {
             let local = crev::Local::auto_open()?;
             local.show_own_ids()?;

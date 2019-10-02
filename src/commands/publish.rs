@@ -1,5 +1,5 @@
-use crev_lib as crev;
 use crate::prelude::*;
+use crev_lib as crev;
 
 pub fn run_command() -> Result<()> {
     let local = crev::Local::auto_open()?;

@@ -1,7 +1,7 @@
-use structopt::StructOpt;
 use crate::local;
 use crate::prelude::*;
 use std::io::prelude::*;
+use structopt::StructOpt;
 
 use crev_lib as crev;
 use git2;
@@ -126,7 +126,8 @@ fn add_commits(
     local: &local::Local,
 ) -> Result<()> {
     // TODO: use into_iter here?
-    let mut new_entries: std::collections::BTreeSet<index::IndexEntry> = std::collections::BTreeSet::new();
+    let mut new_entries: std::collections::BTreeSet<index::IndexEntry> =
+        std::collections::BTreeSet::new();
     for commit in commits {
         new_entries.insert(index::IndexEntry {
             commit_id: commit.id().to_string(),
@@ -135,7 +136,8 @@ fn add_commits(
     }
 
     let contents = std::fs::read_to_string(&local.index_path).unwrap_or("".to_owned());
-    let mut index: index::Index = serde_yaml::from_str(&contents).unwrap_or(index::Index::default());
+    let mut index: index::Index =
+        serde_yaml::from_str(&contents).unwrap_or(index::Index::default());
     index.insert(&mut new_entries, trust_status);
 
     let mut file = std::fs::File::create(&local.index_path)?;

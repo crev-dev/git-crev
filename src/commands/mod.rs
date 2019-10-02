@@ -1,4 +1,3 @@
-use crev_data::Level;
 use structopt::StructOpt;
 
 use crate::prelude::*;
@@ -29,45 +28,6 @@ pub fn run_command(command: Command) -> Result<()> {
     }
 
     Ok(())
-}
-
-/// Verification Requirements
-#[derive(Debug, StructOpt, Clone, Default)]
-pub struct VerificationRequirements {
-    /// Minimum trust level of the reviewers for reviews
-    #[structopt(long = "trust", default_value = "low")]
-    pub trust_level: crev_data::Level,
-
-    /// Number of reviews required
-    #[structopt(long = "redundancy", default_value = "1")]
-    pub redundancy: u64,
-    /// Required understanding
-    #[structopt(long = "understanding", default_value = "none")]
-    pub understanding_level: Level,
-    /// Required thoroughness
-    #[structopt(long = "thoroughness", default_value = "none")]
-    pub thoroughness_level: Level,
-}
-
-impl From<VerificationRequirements> for crev_lib::VerificationRequirements {
-    fn from(req: VerificationRequirements) -> Self {
-        crev_lib::VerificationRequirements {
-            trust_level: req.trust_level,
-            redundancy: req.redundancy,
-            understanding: req.understanding_level,
-            thoroughness: req.thoroughness_level,
-        }
-    }
-}
-
-#[derive(Debug, StructOpt, Clone, Default)]
-pub struct Update {}
-
-#[derive(Debug, Clone, Default)]
-pub struct AdviseCommon {
-    /// This release contains advisory (important fix)
-    pub affected: crev_data::proof::review::package::VersionRange,
-    pub severity: Level,
 }
 
 #[derive(Debug, StructOpt, Clone)]
