@@ -1,12 +1,35 @@
 use crev_data::Level;
 use structopt::StructOpt;
 
-pub mod id;
-pub mod add;
-pub mod publish;
-pub mod fetch;
-pub mod import;
+use crate::prelude::*;
 
+mod add;
+mod fetch;
+pub mod id;
+mod import;
+mod publish;
+
+pub fn run_command(command: Command) -> Result<()> {
+    match command {
+        Command::Id(subcommand) => {
+            id::run_command(subcommand)?;
+        }
+        Command::Publish => {
+            publish::run_command()?;
+        }
+        Command::Fetch(subcommand) => {
+            fetch::run_command(subcommand)?;
+        }
+        Command::Import(subcommand) => {
+            import::run_command(subcommand)?;
+        }
+        Command::Add(args) => {
+            add::run_command(&args)?;
+        }
+    }
+
+    Ok(())
+}
 
 /// Verification Requirements
 #[derive(Debug, StructOpt, Clone, Default)]
