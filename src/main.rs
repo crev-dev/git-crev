@@ -33,20 +33,9 @@ fn run_command(command: commands::Command) -> Result<()> {
         commands::Command::Publish => {
             commands::publish::run_command()?;
         }
-        commands::Command::Fetch(cmd) => match cmd {
-            commands::Fetch::Trusted(params) => {
-                let local = crev::Local::auto_create_or_open()?;
-                local.fetch_trusted(params.into())?;
-            }
-            commands::Fetch::Url(params) => {
-                let local = crev::Local::auto_create_or_open()?;
-                local.fetch_url(&params.url)?;
-            }
-            commands::Fetch::All => {
-                let local = crev::Local::auto_create_or_open()?;
-                local.fetch_all()?;
-            }
-        },
+        commands::Command::Fetch(subcommand) => {
+            commands::fetch::run_command(subcommand)?;
+        }
         commands::Command::Import(cmd) => match cmd {
             commands::Import::Proof(args) => {
                 let local = crev::Local::auto_create_or_open()?;
