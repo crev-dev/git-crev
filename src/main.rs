@@ -7,9 +7,6 @@
 #![cfg_attr(feature = "documentation", feature(external_doc))]
 use self::prelude::*;
 
-use crev_data;
-use crev_lib as crev;
-
 use structopt::StructOpt;
 
 // #[cfg(feature = "documentation")]
@@ -23,8 +20,6 @@ mod prelude;
 mod shared;
 mod term;
 
-use crate::shared::*;
-
 fn run_command(command: commands::Command) -> Result<()> {
     match command {
         commands::Command::Id(subcommand) => {
@@ -36,25 +31,8 @@ fn run_command(command: commands::Command) -> Result<()> {
         commands::Command::Fetch(subcommand) => {
             commands::fetch::run_command(subcommand)?;
         }
-        commands::Command::Import(cmd) => match cmd {
-            commands::Import::Proof(args) => {
-                let local = crev::Local::auto_create_or_open()?;
-                let id = local.read_current_unlocked_id(&crev_common::read_passphrase)?;
-
-                let s = load_stdin_with_prompt()?;
-                let proofs = crev_data::proof::Proof::parse(s.as_slice())?;
-                let commit_msg = "Import proofs";
-
-                for proof in proofs {
-                    let mut content = proof.content;
-                    if args.reset_date {
-                        content.set_date(&crev_common::now());
-                    }
-                    content.set_author(&id.as_pubid());
-                    let proof = content.sign_by(&id)?;
-                    maybe_store(&local, &proof, &commit_msg, &args.common)?;
-                }
-            }
+        commands::Command::Import(subcommand) => {
+            commands::import::run_command(subcommand)?;
         },
         commands::Command::Add(args) => {
             commands::add::run_command(&args)?;

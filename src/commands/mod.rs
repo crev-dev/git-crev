@@ -5,6 +5,7 @@ pub mod id;
 pub mod add;
 pub mod publish;
 pub mod fetch;
+pub mod import;
 
 
 /// Verification Requirements
@@ -47,25 +48,6 @@ pub struct AdviseCommon {
 }
 
 #[derive(Debug, StructOpt, Clone)]
-pub enum Import {
-    /// Import proofs: resign proofs using current id
-    ///
-    /// Useful for mass-import of proofs signed by another ID
-    #[structopt(name = "proof")]
-    Proof(ImportProof),
-}
-
-#[derive(Debug, StructOpt, Clone)]
-pub struct ImportProof {
-    /// Reset proof date to current date
-    #[structopt(long = "reset-date")]
-    pub reset_date: bool,
-
-    #[structopt(flatten)]
-    pub common: id::CommonProofCreate,
-}
-
-#[derive(Debug, StructOpt, Clone)]
 pub enum Command {
     /// Manage IDs
     #[structopt(name = "id", alias = "new")]
@@ -82,7 +64,7 @@ pub enum Command {
 
     /// Import proofs
     #[structopt(name = "import")]
-    Import(Import),
+    Import(import::Import),
 
     /// Stage commits for review
     #[structopt(name = "add")]
