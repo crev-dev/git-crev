@@ -9,6 +9,7 @@ use git2;
 use serde_yaml;
 
 use crate::index;
+mod interactive;
 
 #[derive(Debug, StructOpt, Clone)]
 #[structopt(name = "add")]
@@ -22,11 +23,17 @@ pub struct Add {
 
     #[structopt(long = "distrust", short = "d")]
     pub distrust: bool,
+
+    #[structopt(long = "interactive", short = "i")]
+    pub interactive: bool,
 }
 
 /// Run 'add' subcommand.
 pub fn run_command(args: &Add) -> Result<()> {
     let local = local::Local::auto_create_or_open()?;
+    if args.interactive {
+        return interactive::run(&local);
+    }
 
     let trust_status = if args.trust {
         crev::TrustOrDistrust::Trust

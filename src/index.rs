@@ -25,6 +25,7 @@ impl Eq for IndexEntry {}
 pub struct Index {
     pub trust: std::collections::BTreeSet<IndexEntry>,
     pub distrust: std::collections::BTreeSet<IndexEntry>,
+    all_commit_ids: std::collections::BTreeSet<String>,
 }
 
 impl Index {
@@ -52,5 +53,13 @@ impl Index {
                 }
             }
         };
+
+        for new_entry in new_entries.iter() {
+            self.all_commit_ids.insert(new_entry.commit_id.clone());
+        }
+    }
+
+    pub fn contains_commit_id(&self, commit_id: String) -> bool {
+        self.all_commit_ids.contains(&commit_id)
     }
 }
