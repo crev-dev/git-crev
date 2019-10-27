@@ -10,9 +10,7 @@ use crate::index;
 use crate::local;
 
 pub fn run(local: &local::Local) -> Result<()> {
-    let contents = std::fs::read_to_string(&local.index_path).unwrap_or("".to_owned());
-    let mut index: index::Index =
-        serde_yaml::from_str(&contents).unwrap_or(index::Index::default());
+    let mut index = index::Index::load(&local.index_path)?;
 
     let mut revwalk = local.repository.revwalk()?;
     revwalk.push_head()?;

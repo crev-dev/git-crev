@@ -4,8 +4,7 @@ use crate::prelude::*;
 
 pub fn run_command() -> Result<()> {
     let local = local::Local::auto_create_or_open()?;
-    let contents = std::fs::read_to_string(&local.index_path).unwrap_or("".to_owned());
-    let index: index::Index = serde_yaml::from_str(&contents).unwrap_or(index::Index::default());
+    let index = index::Index::load(&local.index_path)?;
     println!(
         "Commits staged as part of an ongoing review.\n\
         \t(use \"git crev commit\" to commit the review)\n"

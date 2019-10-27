@@ -141,9 +141,7 @@ fn add_commits(
         });
     }
 
-    let contents = std::fs::read_to_string(&local.index_path).unwrap_or("".to_owned());
-    let mut index: index::Index =
-        serde_yaml::from_str(&contents).unwrap_or(index::Index::default());
+    let mut index = index::Index::load(&local.index_path)?;
     index.insert(&mut new_entries, trust_status);
     index.dump(&local.index_path)?;
     Ok(())
