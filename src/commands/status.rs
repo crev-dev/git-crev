@@ -7,15 +7,25 @@ pub fn run_command() -> Result<()> {
     let index = index::Index::load(&local.index_path)?;
     println!(
         "Commits staged as part of an ongoing review.\n\
-        \t(use \"git crev commit\" to commit the review)\n"
+         \t(use \"git crev commit\" to commit the review)\n"
     );
 
-    println!("Trusted:\n");
-    print_commits(&index.trust);
-    println!("\n");
-    println!("Distrusted:\n");
-    print_commits(&index.distrust);
-    println!();
+    if !index.trust.is_empty() {
+        println!("Trusted:\n");
+        print_commits(&index.trust);
+        println!("\n");
+    }
+
+    if !index.distrust.is_empty() {
+        println!("Distrusted:\n");
+        print_commits(&index.distrust);
+        println!();
+    }
+
+    if index.trust.is_empty() && index.distrust.is_empty() {
+        println!("No commits staged.");
+    }
+
     Ok(())
 }
 
