@@ -1,5 +1,8 @@
-use crev_lib as crev;
+use std::io::prelude::*;
 use serde;
+
+use crev_lib as crev;
+use crate::prelude::*;
 
 #[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct IndexEntry {
@@ -61,5 +64,11 @@ impl Index {
 
     pub fn contains_commit_id(&self, commit_id: String) -> bool {
         self.all_commit_ids.contains(&commit_id)
+    }
+
+    pub fn dump(&self, file_path: &std::path::PathBuf) -> Result<()> {
+        let mut file = std::fs::File::create(&file_path)?;
+        file.write_all(serde_yaml::to_string(&self)?.as_bytes())?;
+        Ok(())
     }
 }

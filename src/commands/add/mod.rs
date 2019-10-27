@@ -1,6 +1,5 @@
 use crate::local;
 use crate::prelude::*;
-use std::io::prelude::*;
 use structopt::StructOpt;
 
 use crev_lib as crev;
@@ -146,9 +145,6 @@ fn add_commits(
     let mut index: index::Index =
         serde_yaml::from_str(&contents).unwrap_or(index::Index::default());
     index.insert(&mut new_entries, trust_status);
-
-    let mut file = std::fs::File::create(&local.index_path)?;
-    file.write_all(serde_yaml::to_string(&index)?.as_bytes())?;
-
+    index.dump(&local.index_path)?;
     Ok(())
 }

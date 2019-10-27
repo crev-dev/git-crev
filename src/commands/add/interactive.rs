@@ -49,8 +49,7 @@ pub fn run(local: &local::Local) -> Result<()> {
             index.insert(&mut new_entry, &crev::TrustOrDistrust::Distrust);
         }
 
-        let mut file = std::fs::File::create(&local.index_path)?;
-        file.write_all(serde_yaml::to_string(&index)?.as_bytes())?;
+        index.dump(&local.index_path)?;
     }
     Ok(())
 }
